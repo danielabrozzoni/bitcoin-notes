@@ -28,6 +28,7 @@ For every address in a ADDR message, if
 - the ADDR is not in response to a GETADDR request,
 - the size of the ADDR message is <10,
 - the address is routable
+
 then the node might relay the address.
 
 This is handled by `RelayAddress`, which includes additional checks:
@@ -41,6 +42,7 @@ If all conditions are met, `RelayAddress` calls `PushAddress` to add the address
 We execute some logic to protect us from spamming and fingerprinting attacks:
 - We don't reply to inbound peers
 - We ignore repeated GETADDR messages
+
 If the peer passes these checks, we send back the addresses in the addr cache
 
 
@@ -51,7 +53,7 @@ When we connect to a new peer, we might decide to send a GETADDR to help populat
 
 # How are timestamps used?
 
-Address timestamps are included in the ADDR message, and saved in the Addrman. We interpret the timestamp of an address as a `last_seen` (see the log message in CConman::ConnectNode that explicitly log `lastseen=`)
+Address timestamps are included in the ADDR message, and saved in the Addrman. We interpret the timestamp of an address as a `last_seen` (see the log message in `CConman::ConnectNode` that explicitly log `lastseen=`)
 
 Timestamps are used to decide:
 - Whether we should relay the addresses we receive - we don't want to relay addresses that are older than 10 minutes
@@ -64,16 +66,18 @@ Timestamps are used to decide:
 When nodes self-announce, they do so with the current node time as the timestamp.
 
 Nodes often slightly change the timestamps of the addrs received before saving them:
-- When receiving an ADDR message, if the timestamp is less than 1000000000s or more than current_time + 10 minutes, we change the timestamp to be current time minus 5 days. (I suppose) it's because we don't want to save obviously invalid timestamps, so we change it to have a reasonable timestamp, old enough that it won't get relayed to peers (>10 minutes), but fresh enough that it won't get terrible for at least another 25 days
+- When receiving an ADDR message, if the timestamp is less than 1000000000s or more than current_time + 10 minutes, we change the timestamp to be current time minus 5 days.
+  - (I suppose) it's because we don't want to save obviously invalid timestamps, so we change it to have a reasonable timestamp, old enough that it won't get relayed to peers (>10 minutes), but fresh enough that it won't get terrible for at least another 25 days
 - When receiving an address from a seed, we give it a timestamp of between one and two weeks ago (`ConvertSeeds`)
 - When receiving an address from a dns node, we give it a random timestamp between three and seven days old (net.cpp, L2340, after "Loading addresses from DNS seed")
-- When we add an address to the addrman or update its timestamp, we remove a time_penalty from the timestamp. The time_penalty is 0 if the address comes from a self announcement, otherwise, it's 2h (net_processing:3874). I suppose the 2h time_penalty is to take into account all the time the address traveled around the network before reaching us (?)
+- When we add an address to the addrman or update its timestamp, we remove a time_penalty from the timestamp. The time_penalty is 0 if the address comes from a self announcement, otherwise, it's 2h (net_processing:3874).
+  - I suppose the 2h time_penalty is to take into account all the time the address traveled around the network before reaching us (?)
 
 Nodes also routinely update the addresses timestamps in their addrman:
 - When we connect to a node, we update its `nTime` if our is older than 20min (`AddrManImpl::Connected_`)
 - When `AddrManImpl::AddSingle` is called
-- If the address is already in the addrman: if the address timestamp is older than update_interval (1h for currently online nodes, 24h otherwise), we update it (maybe with time_penalty, as specified above)
-- If the address is not in the addrman: insert it, maybe manipulate the timestamp with time_penalty
+- If the address is already in the addrman: if the address timestamp is older than `update_interval` (1h for currently online nodes, 24h otherwise), we update it (maybe with `time_penalty`, as specified above)
+- If the address is not in the addrman: insert it, maybe manipulate the timestamp with `time_penalty`
 
 ## Timestamps lifecycle
 
