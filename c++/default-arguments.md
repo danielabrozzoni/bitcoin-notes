@@ -1,3 +1,5 @@
+<!-- desc: C++ default arguments — syntax, header/source split, and usage examples. -->
+
 # Default arguments in C++ functions
 
 In C++, default arguments allow function parameters to have default values, making them optional when calling the function.

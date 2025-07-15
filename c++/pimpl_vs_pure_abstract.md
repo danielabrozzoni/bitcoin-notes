@@ -1,3 +1,5 @@
+<!-- desc: Explains the PIMPL and Pure Abstract Class patterns for hiding implementation details. -->
+
 # PIMPL and Pure Abstract Class
 
 In C++, any time we change the internal implementation of a class, all code that depends on that class needs to be recompiled. This happens because:

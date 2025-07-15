@@ -1,3 +1,5 @@
+<!-- desc: How include guards prevent multiple inclusion in C++ headers, and how to write them. -->
+
 # Include guards
 
 Include guards are used to avoid the problem of double/circular inclusion: every time you `#include`, the pre-processor copy-pastes the whole content of the included file into the includer, which can lead to errors.

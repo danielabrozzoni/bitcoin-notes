@@ -1,3 +1,5 @@
+<!-- desc: Comparing std::mutex and std::recursive_mutex, with a hands-on nested logging example. -->
+
 # Mutex vs Recursive Mutex
 
 `std::mutex` is used to protect shared resources from concurrent acces by multiple threads. It can only be locked once per thread, and if you lock more than once, it will deadlock.
@@ -13,7 +15,7 @@
 
 Warning: this exercise is AI generated, but still useful IMHO
 
-```
+```cpp
 // Scenario:
 // You’re building a very basic logging system where multiple threads can log messages.
 // The logging function can optionally log nested details, like timestamps or metadata —

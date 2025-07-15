@@ -1,3 +1,5 @@
+<!-- desc: Why macros use do { ... } while(false); to behave like safe single statements. -->
+
 # Macro Safety: The do-while-false Idiom
 
 It's common to wrap multi-statement macros in a `do { ... } while(false)` block. This is done to make the macro safe when used inside control structures like `if` without braces; without it, macros that expand to multiple statements can behave in unexpected ways.
