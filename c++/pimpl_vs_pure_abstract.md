@@ -14,7 +14,7 @@ In both cases, the original class is split into two parts:
 
 With this setup, when internal implementation changes, only the implementation file needs to be recompiled. Clients that include just the abstract interface are unaffected and don’t need to be rebuilt.
 
-TODO: insert markdown index?
+If you want to know more: [Bitcoin Core Review Club #22950](https://bitcoincore.reviews/22950)
 
 ## Pure Abstract Class pattern
 
@@ -72,7 +72,7 @@ class DogImpl final: public Dog {
 ```
 
 ### Step 3: Implement the factory method
-We couldn't define the `make()` method earlier, since `DogImpl` wasn't visible yet.
+We define the make() method here, since DogImpl is now visible.
 
 ```cpp
 // in file dog.cpp
@@ -93,8 +93,90 @@ int main() {
 ```
 
 ## PIMPL
-TODO
 
+Example from Bitcoin Core: `AddrMan` and `AddrManImpl`.
 
-## Drawbacks, which one to choose
-TODO
+Interface object owns a pointer to the implementation object. Whenever there is a method call, the call gets forwarded to the implementation object to fulfill, and any return values are routed back through the same path.
+
+## Step 1: Declare base class
+
+The public-facing class holds a pointer to its hidden implementation. At this stage, we only declare the interface, no method definitions yet.
+
+- Declare a forward-declared inner class Impl, which will hold the actual data and logic.
+- Store a std::unique_ptr<Impl> as a private (or protected) member.
+- Declare the constructor and destructor, but don’t define them here, the Impl type is still incomplete.
+- Declare all public methods.
+
+```cpp
+// in dog.h
+#include <string>
+#include <memory>
+
+class Dog {
+    protected:
+        class Impl;
+        std::unique_ptr<Impl> m_impl;
+
+    public:
+        // Constructor and destructor are only declared here - we can't define them yet
+        // because Impl is an incomplete type
+        Dog(std::string name);
+        ~Dog();
+
+        void say_name();
+};
+```
+
+## Step 2: Implementation class
+
+Define the Impl class, which holds the actual private data and method implementations.
+
+Then define the base class's methods: each forwards the call to the implementation.
+
+```cpp
+// in dog.cpp
+#include "dog.h"
+#include <iostream>
+
+class Dog::Impl {
+    // Holds the actual private data
+    std::string name;
+
+    public:
+        Impl(std::string name) : name(name) {}
+        ~Impl() {}
+
+        void say_name() {
+            std::cout << this->name << std::endl;
+        }
+};
+
+Dog::Dog(std::string name): m_impl(std::make_unique<Impl>(name)) {}
+
+Dog::~Dog() = default;
+
+void Dog::say_name() {
+    m_impl->say_name();
+}
+```
+
+## Step 3: Usage
+
+Client code uses only the Dog interface, it has no access to or knowledge of the implementation.
+
+```cpp
+int main() {
+    Dog dog = Dog("willy");
+    dog.say_name();
+}
+```
+
+## Choosing Between Pure Abstract Class and PIMPL
+
+|                          | Pure Abstract Class                                  | PIMPL                                               |
+|--------------------------|------------------------------------------------------|-----------------------------------------------------|
+| **Core idea**            | Define a pure interface; implementation is in a derived class | Encapsulate implementation via a pointer to a hidden `Impl` class |
+| **Runtime cost**         | Virtual function dispatch (vtable lookup)            | Pointer indirection (usually slightly cheaper)      |
+| **Memory layout**        | Separate allocations for interface + impl            | Single interface object holds the pointer           |
+| **Extensibility**        | Supports multiple implementations                     | Not meant to be subclassed                          |
+| **Binary stability**     | Interface changes can break client code              | Internal changes don’t affect interface             |
