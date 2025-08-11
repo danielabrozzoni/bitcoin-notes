@@ -13,6 +13,9 @@ Notes may be _wrong_, _outdated_, or just me thinking out loud. Don't trust, ver
 - [`mutex-vs-recursive-mutex.md`](c++/mutex-vs-recursive-mutex.md): Comparing std::mutex and std::recursive_mutex, with a hands-on nested logging example.
 - [`pimpl_vs_pure_abstract.md`](c++/pimpl_vs_pure_abstract.md): Explains the PIMPL and Pure Abstract Class patterns for hiding implementation details.
 
+### 🫧 misc/
+- [`sancov-modes.md`](misc/sancov-modes.md): Summary of main sanitizer coverage modes
+
 ### 🫧 p2p/
 - [`addr-message.md`](p2p/addr-message.md): When, why, and how Bitcoin nodes send ADDR messages to peers
 - [`addr-timestamps.md`](p2p/addr-timestamps.md): How address timestamps are initialized, updated, and used to evaluate freshness and "terribleness".
