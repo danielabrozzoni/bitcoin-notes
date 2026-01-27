@@ -41,7 +41,7 @@ If all conditions are met, `RelayAddress` calls `PushAddress` to add the address
 ## 3. Replying to GETADDR requests:
 
 We execute some logic to protect us from spamming and fingerprinting attacks:
-- We don't reply to inbound peers
+- We don't reply to GETADDR requests coming from outbound peers. If they connect to us -> they can ask for addresses. If we connect to them -> they can't ask for addresses.
 - We ignore repeated GETADDR messages
 
 If the peer passes these checks, we send back the addresses in the addr cache
