@@ -9,26 +9,34 @@ We want to replicate the p2p addr relay mechanisms. As such, we need to understa
 
 We send a GETADDR when adding a new peer, if:
 - the connection is outbound
-- we are not in block only mode
+- the peer is not block-relay-only
 
 https://github.com/bitcoin/bitcoin/blob/2210feb4466eff1455468f0a25045fce4b89c55d/src/net_processing.cpp#L3590-L3609
 
 ## 2. GETADDR response
 
-If we receive a GETADDR, we query our addrman cache for addresses, and for each address we call `PushAddress`. This will add the addresses to the `m_addrs_to_send` queue.
+If we receive a GETADDR from an inbound connection, we query our addrman cache for addresses, and for each address we call `PushAddress`. This will add the addresses to the `m_addrs_to_send` queue.
+
+We only accept one GETADDR request per connection and will ignore subsequent ones. We also ignore GETADDRs sent by outbound peers.
 
 ## 3. Self announcement
 
-In MaybeSendAddr (todo: this is another point, expand on how timers set/used), if `m_next_local_addr_send` expired, we `PushAddress` with our self announcement.
+We will self announce our address if:
+- we accept inbound connections (`fListen = true`)
+- we are not in IBD
+
+In MaybeSendAddr, if m_next_local_addr_send expired, we self-announce. The interval is drawn from an exponential distribution with a 24h average.
+The first self-announcement is sent immediately as its own dedicated message (not via the queue), to ensure it isn't dropped by rate limiting. All subsequent ones go through PushAddress.
 
 ## 4. We receive an ADDR
 
 If we receive an ADDR message that:
-- Contains less than 10 addresses
+- Contains <= than 10 addresses
 - Is not a reponse to a GETADDR request
 
 For each address in the message, if:
 - The address timestamp is less than 10minutes ago (to prevent addr relay flooding)
+- The address is routable
 
 Then we call `RelayAddress` on the address. This function:
 - Picks the peers to relay the address to.
