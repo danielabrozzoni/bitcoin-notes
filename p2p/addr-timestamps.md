@@ -5,7 +5,7 @@ Address timestamps are included in the ADDR message, and saved in the Addrman. W
 
 Timestamps are used to decide:
 - Whether we should relay the addresses we receive - we don't want to relay addresses that are older than 10 minutes
-- The timestamp is taken into account when we want to decide if an address `IsTerrible`. Terrible addresses are not sent in response to `GETADDR`, and the metric is useful in the Addrman when deciding whether to overwrite an address or not (being  terrible is one of the two or conditions to allow it to be overwritten). The conditions for being terrible are:
+- The timestamp is taken into account when we want to decide if an address `IsTerrible`. Terrible addresses are not sent in response to `GETADDR`, and the metric is useful in the Addrman when deciding whether to overwrite an address or not in the new table (being  terrible is one of the two or conditions to allow it to be overwritten). The conditions for being terrible are:
   - Addresses tried in the last minute can't be terrible
   - An address is considered terrible if the address timestamp is in the future (10 minutes wiggle room admitted) or older than 30 days
   - An address is considered terrible if we tried connecting to it for at least `ADDRMAN_RETRIES` attempts and never had a success
