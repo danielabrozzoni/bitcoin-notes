@@ -24,6 +24,9 @@ Notes may be _wrong_, _outdated_, or just me thinking out loud. Don't trust, ver
 ### 🫧 p2p/addr-relay-simulation/
 - [`addr-relay-timers.md`](p2p/addr-relay-simulation/addr-relay-timers.md): Short explanation of when ADDR/GETADDR are sent, to serve as a spec for the simulation
 
+### 🫧 reviews/
+- [`35297.md`](reviews/35297.md): Review notes for [#35297](https://github.com/bitcoin/bitcoin/pull/35297)
+
 
 ---
 
