@@ -21,11 +21,14 @@ Notes may be _wrong_, _outdated_, or just me thinking out loud. Don't trust, ver
 - [`addr-timestamps.md`](p2p/addr-timestamps.md): How address timestamps are initialized, updated, and used to evaluate freshness and "terribleness".
 - [`getaddr-request.md`](p2p/getaddr-request.md): When and why nodes send GETADDR, and how responses are rate-limited.
 
-### 🫧 p2p/addr-relay-simulation/
-- [`addr-relay-timers.md`](p2p/addr-relay-simulation/addr-relay-timers.md): Short explanation of when ADDR/GETADDR are sent, to serve as a spec for the simulation
+### 🫧 p2p/fingerprint-research/addr-relay-simulation/
+- [`addr-relay-timers.md`](p2p/fingerprint-research/addr-relay-simulation/addr-relay-timers.md): Short explanation of when ADDR/GETADDR are sent, to serve as a spec for the simulation
+
+### 🫧 p2p/fingerprint-research/fuzzing-research/
 
 ### 🫧 reviews/
 - [`35297.md`](reviews/35297.md): Review notes for [#35297](https://github.com/bitcoin/bitcoin/pull/35297)
+- [`36503.md`](reviews/36503.md): Review notes for [#36503](https://github.com/bitcoin/bitcoin/pull/36503)
 
 
 ---
